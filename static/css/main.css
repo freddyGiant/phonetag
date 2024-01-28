@@ -46,10 +46,10 @@ button {
     color: inherit;
     font-family: inherit;
     border: none;
-    padding: 10px 20px;
+    padding: 15px 25px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 3rem;
+    font-size: 5rem;
     margin: 5rem 0;
 }
 
