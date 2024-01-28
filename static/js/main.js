@@ -7,8 +7,7 @@
 
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
-let status = "INFECTED";
-
+let status = "HEALTHY";
 let username;
 
 socket.on("getUserInfo", data => {
@@ -30,6 +29,7 @@ socket.on("youHaveBeenTagged", data => {
   status = "INFECTED"
   document.getElementById('status').innerHTML = status;
   document.getElementById('status').style = `color: ${status == "INFECTED" ? "var(--red)" : "inherit"}`;
+  document.getElementById('tag').style.backgroundColor = status === "INFECTED" ? "var(--red)" : "var(--default-content)";
 })
 
 //  window.addEventListener("deviceorientation", (event) => {
