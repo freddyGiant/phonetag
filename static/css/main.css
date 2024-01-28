@@ -1,12 +1,65 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
+:root {
+    --light: #EAEAEA;
+    --light-accent: #CBC5EA;
+    --default-content: #73628A;
+    --accent-dark: #313D5A;
+    --dark: #183642;
+    --red: #B22222;
 }
 
-.container {
+html, body {
+    font-family: 'Dosis', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--light);
+    background-color: var(--dark);
+}
+
+h1 {
+    display: inline-block;
+    font-size: 6rem;
+    margin-bottom: 0;
+    color: var(--light-accent);
+}
+
+h3 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+wrapper {
+    display: block;
+    text-align: center;
     width: 80%;
     margin: auto;
-    overflow: hidden;
+    
+    @media (max-width: 600px) {
+        width: 100%;
+    }
 }
+
+button {
+    display: inline-block;
+    background-color: var(--red);
+    /* color: white; */
+    /* color: var(--light); */
+    color: inherit;
+    font-family: inherit;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 3rem;
+    margin: 5rem 0;
+}
+
+#status {
+    margin: 0;
+    font-size: 6rem;
+}
+
+/* hr {
+    border-left: 8px dotted var(--light-accent);
+    width: 80%;
+    margin: auto;
+} */
