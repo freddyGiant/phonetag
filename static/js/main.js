@@ -7,7 +7,7 @@
 
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
-let status = "UNINFECTED";
+let status = "HEALTHY";
 
 let username;
 
@@ -165,6 +165,7 @@ document.getElementById('tag').addEventListener('click', function() {
 });
      
 document.getElementById('status').innerHTML = status;
-document.getElementById('status').style = `color: ${status == "INFECTED" ? "var(--red)" : "inherit"}`;
+document.getElementById('status').style.color = status === "INFECTED" ? "var(--red)" : "var(--default-content)";
+document.getElementById('tag').style.backgroundColor = status === "INFECTED" ? "var(--red)" : "var(--default-content)";
 
 
