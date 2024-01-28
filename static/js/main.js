@@ -158,8 +158,9 @@ document.getElementById('tag').addEventListener('click', function() {
         console.log('Accuracy:', accuracy);
 
         response = JSON.stringify({lat: latitude, long: longitude, user: username})
-        socket.emit("tag", response)  
-
+        if (status == "INFECTED") {
+          socket.emit("tag", response)  
+        }
       })
       .catch(error => console.error('Error:', error));
 });
