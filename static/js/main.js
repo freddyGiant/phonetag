@@ -8,10 +8,15 @@
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
 
+//  window.addEventListener("deviceorientation", (event) => {
+//     console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
+//   });
+
 /**
  * Track the user location and continuously get latitude and longitude.
  * @param {Object} onSuccess - Callback function to handle successful location tracking.
  */
+
  const continuousLocation = onSuccess => {
     if ('geolocation' in navigator === false) {
         // Handle lack of geolocation support
@@ -60,9 +65,9 @@ const instantLocation = async (retries, delay) => new Promise((resolve, reject) 
     );
 });
 
-document.getElementById('tag').addEventListener('click', async () => {
-    console.log('Tag button clicked.');
-    
+const tag = async () => {
+    console.log('Tag button clicked at');
+  
     const currentTime = new Date().now();
     
     const geoposition = await instantLocation(GEOLOCATION_RETRIES, 100);
@@ -75,20 +80,51 @@ document.getElementById('tag').addEventListener('click', async () => {
     
     console.log(`Emitting location data...`);
     socket.emit('tag', locationData);
-});
+}
+
+// cross-platform logic:
+// if (typeof window.webkitCompassHeading!== "undefined") {
+//     alpha = window.webkitCompassHeading; //iOS non-standard
+//     var heading = alpha;
+//     console.log('Angle' + heading);
+//     document.getElementById('compass').innerHTML = `Compass: ${heading}`;
+//   }
+// else {
+//     alert("Your device is reporting relative alpha values, so this compass won't point north! ");
+//     alpha = window.webkitCompassHeading;
+//     var heading = 360 - alpha; //heading [0, 360)
+//     console.log('Angle' + heading);
+//     document.getElementById('compass').innerHTML = `Compass: ${heading}`;
+// }
+
+// // // Compass stuffs
+const handleOrientation = event => {
+    console.log("Measuring direction...")
+    const compassDirection = event.alpha;
+    console.log('Compass Direction:', compassDirection);
+    document.getElementById('direction').innerHTML = `Compass: ${compassDirection}`;
+}
 
 const main = () => {
     if (!('geolocation' in navigator)) {
-        console.error('Geolocation is not supported by your browser.');
+        console.error('Longitude/latitude data is not supported by your browser.');
         return;
     }
     
-    // navigator.geolocation.getCurrentPosition(
-    //     position => {
-    //         console.log('GOD DAMNIT YOU PIECE OF SHIT');
-    //     },
-    //     error => {},
-    // );
+    document.getElementById('tag').addEventListener('click', tag);
+  
+    if (window.DeviceOrientationAbsoluteEvent) {
+        console.log("DeviceOrientationAbsoluteEvent is supported")
+        window.addEventListener("DeviceOrientationAbsoluteEvent", handleOrientation);
+    }
+    else if(window.DeviceOrientationEvent){
+        console.log("DeviceOrientationEvent is supported")
+        window.addEventListener("deviceorientation", handleOrientation);
+    }
+    else {
+      alert('Heading data is not supported by your browser.');
+      return;
+    }
 };
 
 main();
