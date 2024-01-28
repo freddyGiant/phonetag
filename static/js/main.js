@@ -7,11 +7,12 @@
 
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
+var name = null;
 
 socket.on("getUserInfo", data => {
     data = JSON.parse(data)
     console.log(data)
-    const name = prompt("Enter your name:"); 
+    name = prompt("Enter your name:"); 
     console.log(name)
     response = JSON.stringify({
         id: data['id'], // save my id?
