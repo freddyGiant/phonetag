@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, jsonify, Request
+<<<<<<< HEAD
+=======
 from flask_socketio import SocketIO
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 from math import *
 from flask_cors import CORS
 
@@ -13,10 +16,13 @@ CORS(app, resources={r"/register": {"origins": "*"}})
 def home():
     return render_template('index.html')
 
+<<<<<<< HEAD
+=======
 @socket.on('tag')
 def handleTag(location_data):
     print(location_data)
 
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 def tagHitFromLatandCompass(P1Lat, P1Long, P1Compass, P2Lat, P2Long): #assumes the compass increases counterclockwise
     P1aim = radians(P1Compass)
     P1aim -= pi/2
@@ -67,6 +73,10 @@ def tagHitCheck(P1x, P1y, P1aim, P2x, P2y): #Returns true if the 2nd player is i
 
     return False
 
+<<<<<<< HEAD
+
+
+=======
 # Make player class
 class Player:
     def __init__(self, id):
@@ -87,6 +97,7 @@ def tag_player(id):
     # Tell the player they have been tagged
     pass
 
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 
 # Dummy data to simulate player storage
 players = []
@@ -115,6 +126,7 @@ def register_player():
     response = jsonify({'playerId': player_id})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
 
 if __name__ == '__main__':
     socket.run(app)
