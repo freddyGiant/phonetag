@@ -7,7 +7,7 @@
 
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
-let status = "HEALTHY";
+let status = "INFECTED";
 
 let username;
 
@@ -160,6 +160,9 @@ document.getElementById('tag').addEventListener('click', function() {
         response = JSON.stringify({lat: latitude, long: longitude, user: username})
         if (status == "INFECTED") {
           socket.emit("tag", response)  
+        }
+        else{
+          alert("You are not infected! You cannot tag others.")
         }
       })
       .catch(error => console.error('Error:', error));
