@@ -127,4 +127,39 @@ const main = () => {
     }
 };
 
+// Client-side code (browser)
+const registerPlayer = () => {
+    const playerName = prompt("Enter your name:");
+  
+    // Make an AJAX request to the Flask server to register the player
+    fetch('http://127.0.0.1:5000/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true',
+      },
+      body: JSON.stringify({ playerName }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        const playerId = data.playerId;
+  
+        // Create a player object with the assigned ID
+        const player = {
+          id: playerId,
+          name: playerName,
+          // Other player properties...
+        };
+  
+        // Use the player object as needed (e.g., store it locally, update UI, etc.)
+        console.log('Registered Player:', player);
+      })
+      .catch(error => console.error('Error:', error));
+  };
+  
+  // Example: Call registerPlayer when a button is clicked
+  document.getElementById('registerButton').addEventListener('click', registerPlayer);
+  
+
 main();

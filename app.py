@@ -1,9 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify, Request
 from flask_socketio import SocketIO
 from math import *
+from flask_cors import CORS
+
+
 
 app = Flask(__name__)
-socket = SocketIO(app)
+socket = SocketIO(app, cors_allowed_origins="*")
+CORS(app, resources={r"/register": {"origins": "*"}})
 
 @app.route('/')
 def home():
@@ -64,7 +68,6 @@ def tagHitCheck(P1x, P1y, P1aim, P2x, P2y): #Returns true if the 2nd player is i
     return False
 
 # Make player class
-
 class Player:
     def __init__(self, id):
         self.id = id
@@ -78,12 +81,40 @@ class Player:
 
 def verify_tags(lat, long, direction, id):
     # Check for all players whether or not in range of tag
-    return list_of_players
+    pass 
 
 def tag_player(id):
     # Tell the player they have been tagged
     pass
 
+
+# Dummy data to simulate player storage
+players = []
+
+@app.route('/register', methods=['POST'])
+def register_player():
+    data = request.get_json()
+    player_name = data.get('playerName')
+
+    # Simulate generating a unique player ID (you may use a database in a real scenario)
+    player_id = len(players) + 1
+
+    # Create a new player object
+    new_player = {
+        'id': player_id,
+        'name': player_name,
+        # Other player properties...
+    }
+    print(new_player)
+
+    # Store the player object
+    players.append(new_player)
+    print(players)
+
+    # Respond with the assigned player ID
+    response = jsonify({'playerId': player_id})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == '__main__':
     socket.run(app)
