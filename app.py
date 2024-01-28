@@ -63,5 +63,27 @@ def tagHitCheck(P1x, P1y, P1aim, P2x, P2y): #Returns true if the 2nd player is i
 
     return False
 
+# Make player class
+
+class Player:
+    def __init__(self, id):
+        self.id = id
+        self.lat = None
+        self.long = None
+    
+    def get_location(self):
+        # Get location from client side
+        pass
+
+
+def verify_tags(lat, long, direction, id):
+    # Check for all players whether or not in range of tag
+    return list_of_players
+
+def tag_player(id):
+    # Tell the player they have been tagged
+    pass
+
+
 if __name__ == '__main__':
     socket.run(app)
