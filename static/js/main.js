@@ -1,70 +1,130 @@
- /**
-         * Track the user location and continuously get latitude and longitude.
-         * @param {Object} onSuccess - Callback function to handle successful location tracking.
-         */
+/**
+ * TODO:
+ * - decide position cache size (time (10s)? number of positions?)
+ * - remember what i was gonna put here
+ * - differentiate users (UUIDs?)
+ */
+
+const GEOLOCATION_RETRIES = 5;
+const socket = io();
+
+//  window.addEventListener("deviceorientation", (event) => {
+//     console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
+//   });
+
+/**
+ * Track the user location and continuously get latitude and longitude.
+ * @param {Object} onSuccess - Callback function to handle successful location tracking.
+ */
+
  const continuousLocation = onSuccess => {
     if ('geolocation' in navigator === false) {
-    // Handle lack of geolocation support
-    console.error('Geolocation is not supported by your browser.');
-    return;
+        // Handle lack of geolocation support
+        console.error('Geolocation is not supported by your browser.');
+        return;
     }
 
     // Continuously watch the user's position and call the onSuccess callback with coordinates
     navigator.geolocation.watchPosition(
-    ({ coords: { latitude: lat, longitude: lng } }) => {
-        onSuccess(lat, lng);
-    },
-    error => {
-        // Handle location tracking errors
-        console.error('Error getting location /f continuous:', error.message || getPositionErrorMessage(error.code));
-    },
-    {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-    }
+        ({ coords: { latitude: lat, longitude: lng } }) => {
+            onSuccess(lat, lng);
+        },
+        error => {
+            // Handle location tracking errors
+            console.error('Error getting location /f continuous:', error.message || getPositionErrorMessage(error.code));
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
     );
 };
 
-const instantLocation = onSuccess => {
-    if ('geolocation' in navigator === false) {
-    // Handle lack of geolocation support
-    console.error('Geolocation is not supported by your browser.');
-    return;
+// TODO: rename to getPosition()?
+const instantLocation = async (retries, delay) => new Promise((resolve, reject) => {
+    console.log(`Getting location. Retries left: ${retries}`);
+    if(retries <= 0) {
+        reject(`Unable to retrieve location.`);
     }
-
-    // Continuously watch the user's position and call the onSuccess callback with coordinates
     navigator.geolocation.getCurrentPosition(
-    ({ coords: { latitude: lat, longitude: lng } }) => {
-        onSuccess(lat, lng);
-    },
-    error => {
-        // Handle location tracking errors
-        console.error('Error getting location f/ instant:', error.message || getPositionErrorMessage(error.code));
-    },
-    {
-        enableHighAccuracy: true,
-        timeout: Infinity,
-        maximumAge: 0
-    }
+        position => {
+            console.log(`Location retrieved.`);
+            resolve(position);
+        },
+        async error => {
+            console.error(`Error getting location: ${error.message}`);
+            await new Promise(r => setTimeout(r, delay));
+            instantLocation(retries - 1, delay);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10 * 1000,
+            maximumAge: 0
+        }
     );
+});
+
+const tag = async () => {
+    console.log('Tag button clicked at');
+  
+    const currentTime = new Date().now();
+    
+    const geoposition = await instantLocation(GEOLOCATION_RETRIES, 100);
+    // TODO: get iphone heading information
+    const locationData = {
+        latitude: geoposition.coords.latitude.toFixed(5),
+        longitude: geoposition.coords.longitude.toFixed(5),
+        timestamp: currentTime
+    };
+    
+    console.log(`Emitting location data...`);
+    socket.emit('tag', locationData);
+}
+
+// cross-platform logic:
+// if (typeof window.webkitCompassHeading!== "undefined") {
+//     alpha = window.webkitCompassHeading; //iOS non-standard
+//     var heading = alpha;
+//     console.log('Angle' + heading);
+//     document.getElementById('compass').innerHTML = `Compass: ${heading}`;
+//   }
+// else {
+//     alert("Your device is reporting relative alpha values, so this compass won't point north! ");
+//     alpha = window.webkitCompassHeading;
+//     var heading = 360 - alpha; //heading [0, 360)
+//     console.log('Angle' + heading);
+//     document.getElementById('compass').innerHTML = `Compass: ${heading}`;
+// }
+
+// // // Compass stuffs
+const handleOrientation = event => {
+    console.log("Measuring direction...")
+    const compassDirection = event.alpha;
+    console.log('Compass Direction:', compassDirection);
+    document.getElementById('direction').innerHTML = `Compass: ${compassDirection}`;
+}
+
+const main = () => {
+    if (!('geolocation' in navigator)) {
+        console.error('Longitude/latitude data is not supported by your browser.');
+        return;
+    }
+    
+    document.getElementById('tag').addEventListener('click', tag);
+  
+    if (window.DeviceOrientationAbsoluteEvent) {
+        console.log("DeviceOrientationAbsoluteEvent is supported")
+        window.addEventListener("DeviceOrientationAbsoluteEvent", handleOrientation);
+    }
+    else if(window.DeviceOrientationEvent){
+        console.log("DeviceOrientationEvent is supported")
+        window.addEventListener("deviceorientation", handleOrientation);
+    }
+    else {
+      alert('Heading data is not supported by your browser.');
+      return;
+    }
 };
 
-// Example usage:
-continuousLocation((lat, lng) => {
-    // Do something with the latitude and longitude values
-    console.log(`Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`);
-});
-
-document.getElementById('tag').addEventListener('click', function() {
-    instantLocation((lat, lng) => {
-        console.log('Tag button clicked, time: ' + new Date().toISOString());
-        const locationData = {
-            latitude: lat.toFixed(5),
-            longitude: lng.toFixed(5),
-            timestamp: new Date().toISOString()
-        };
-        const jsonLocationData = JSON.stringify(locationData);
-        console.log(`Tag button -- ${jsonLocationData}`);
-    });
-});
+main();

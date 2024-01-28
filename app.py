@@ -1,12 +1,24 @@
 from flask import Flask, render_template
+<<<<<<< HEAD
+=======
+from flask_socketio import SocketIO
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 from math import *
 
 app = Flask(__name__)
+socket = SocketIO(app)
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
+<<<<<<< HEAD
+=======
+@socket.on('tag')
+def handleTag(location_data):
+    print(location_data)
+
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 def tagHitFromLatandCompass(P1Lat, P1Long, P1Compass, P2Lat, P2Long): #assumes the compass increases counterclockwise
     P1aim = radians(P1Compass)
     P1aim -= pi/2
@@ -57,8 +69,32 @@ def tagHitCheck(P1x, P1y, P1aim, P2x, P2y): #Returns true if the 2nd player is i
 
     return False
 
+<<<<<<< HEAD
 
 
+=======
+# Make player class
+
+class Player:
+    def __init__(self, id):
+        self.id = id
+        self.lat = None
+        self.long = None
+    
+    def get_location(self):
+        # Get location from client side
+        pass
+
+
+def verify_tags(lat, long, direction, id):
+    # Check for all players whether or not in range of tag
+    return list_of_players
+
+def tag_player(id):
+    # Tell the player they have been tagged
+    pass
+
+>>>>>>> e3c8620344471f27fa97c57bba8321fb9bc275fa
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socket.run(app)
