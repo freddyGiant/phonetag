@@ -7,6 +7,18 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
+def tagHitFromLatandCompass(P1Lat, P1Long, P1Compass, P2Lat, P2Long): #assumes the compass increases counterclockwise
+    P1aim = radians(P1Compass)
+    P1aim -= pi/2
+    if P1aim < 0:
+        P1aim += 2*pi
+    
+    P1y = 111111.1 * P1Lat
+    P2y = 111111.1 * P2Lat
+
+    P1x = 111111*cos(P1Lat)*P1Long
+    P2x = 111111*cos(P2Lat)*P2Long
+    return tagHitCheck(P1x, P1y, P1aim, P2x, P2y)
 
 def tagHitCheck(P1x, P1y, P1aim, P2x, P2y): #Returns true if the 2nd player is in the area that player 1 should tag at
     #aim should be radians on the unit cicle
