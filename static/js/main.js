@@ -1,34 +1,33 @@
-/**
- * Track the user location and continuously get latitude and longitude.
- * @param {Object} onSuccess - Callback function to handle successful location tracking.
- */
-const trackLocation = onSuccess => {
+ /**
+         * Track the user location and continuously get latitude and longitude.
+         * @param {Object} onSuccess - Callback function to handle successful location tracking.
+         */
+ const trackLocation = onSuccess => {
     if ('geolocation' in navigator === false) {
-      // Handle lack of geolocation support
-      console.error('Geolocation is not supported by your browser.');
-      return;
+    // Handle lack of geolocation support
+    console.error('Geolocation is not supported by your browser.');
+    return;
     }
-  
+
     // Continuously watch the user's position and call the onSuccess callback with coordinates
     navigator.geolocation.watchPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
+    ({ coords: { latitude: lat, longitude: lng } }) => {
         onSuccess(lat, lng);
-      },
-      error => {
+    },
+    error => {
         // Handle location tracking errors
         console.error('Error getting location:', error.message || getPositionErrorMessage(error.code));
-      },
-      {
+    },
+    {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0
-      }
+    }
     );
-  };
-  
-  // Example usage:
-  trackLocation((lat, lng) => {
+};
+
+// Example usage:
+trackLocation((lat, lng) => {
     // Do something with the latitude and longitude values
     console.log(`Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`);
-  });
-  
+});
