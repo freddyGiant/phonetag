@@ -37,7 +37,7 @@ def handleTag(location_data):
     print("Starting tag handling...")
     print(location_data)
     print("All locations:")
-    get_locations()
+    findIfPlayersAreTagged()
 
 
 def tagHitFromLatandCompass(P1Lat, P1Long, P1Compass, P2Lat, P2Long): #assumes the compass increases counterclockwise
@@ -123,11 +123,11 @@ class Player:
 #             list_of_players.append(p)
 #     return list_of_players
 
-def get_locations():
+def findIfPlayersAreTagged():
     print("Starting get_locations")
     print(players)
     for key in players:
-        print(type(players[key]))
+        print(key)
         players[key].get_location()
 
 def tag_player(id):
