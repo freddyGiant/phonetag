@@ -5,16 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Phonetag</title>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- <link rel="stylesheet" href="../static/css/main.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@500&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Phone Tag</h1>
-    <button id="tag"> Tag </button>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <p id="tag_text"> </p>
-    <p id="continuous"> </p>
-    <p id="angle"> </p>
-    <p id="direction"> </p>
+    <wrapper>
+        <h1>phonetag</h1>
+        <button id="tag"> TAG </button>
+        <!-- <hr> -->
+        <h3><i>STATUS:</i></h3>
+        <h2 id="status"></h2>
+        
+        <!-- debug -->
+        <p id="tag_text"> </p>
+        <p id="continuous"> </p>
+        <p id="angle"> </p>
+        <p id="direction"> </p>
+    </wrapper>
 </body>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- <script src="../static/js/main.js"></script> -->
 </html>

@@ -7,7 +7,7 @@
 
 const GEOLOCATION_RETRIES = 5;
 const socket = io();
-var name = null;
+let status = "INFECTED";
 
 socket.on("getUserInfo", data => {
     data = JSON.parse(data)
@@ -235,4 +235,6 @@ document.getElementById('tag').addEventListener('click', function() {
 
 // main();
 
-
+// code to be placed in with the "tagged" event
+document.getElementById('status').innerHTML = status;
+document.getElementById('status').style = `color: ${status == "INFECTED" ? "var(--red)" : "inherit"}`;
