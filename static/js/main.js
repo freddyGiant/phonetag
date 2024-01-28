@@ -57,6 +57,7 @@ const instantLocation = onSuccess => {
 
 continuousLocation((lat, lng) => {
     console.log(`Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`);
+    document.getElementById('continuous').innerHTML = `Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`;
 });
 
 // When tag button is clicked, get the current location and timestamp and convert to JSON
@@ -70,6 +71,7 @@ document.getElementById('tag').addEventListener('click', function() {
         };
         const jsonLocationData = JSON.stringify(locationData);
         console.log(`Tag button -- ${jsonLocationData}`);
+        document.getElementById('tag_text').innerHTML = `Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`;
     });
 });
 
@@ -79,6 +81,7 @@ function handleOrientation(event) {
     console.log("Measuring direction...")
     const compassDirection = event.alpha;
     console.log('Compass Direction:', compassDirection);
+    document.getElementById('direction').innerHTML = `Compass: ${compassDirection}`;
 }
 
 // if (window.DeviceOrientationEvent) {
@@ -92,12 +95,14 @@ if (typeof window.webkitCompassHeading!== "undefined") {
     alpha = window.webkitCompassHeading; //iOS non-standard
     var heading = alpha;
     console.log('Angle' + heading);
+    document.getElementById('compass').innerHTML = `Compass: ${heading}`;
   }
 else {
     alert("Your device is reporting relative alpha values, so this compass won't point north! ");
     alpha = window.webkitCompassHeading;
     var heading = 360 - alpha; //heading [0, 360)
     console.log('Angle' + heading);
+    document.getElementById('compass').innerHTML = `Compass: ${heading}`;
 }
 
 if (window.DeviceOrientationAbsoluteEvent) {
