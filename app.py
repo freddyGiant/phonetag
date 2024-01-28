@@ -34,6 +34,8 @@ def registerUser(sid):
         players[response["displayName"]] = Player(sid, playeruuid, response["displayName"])
         print("Players registered")
         print(players)
+        if len(players) == 1:
+            tag_player(response["displayName"], "god")
 
 @io.on('tag')
 def handleTag(location_data):
