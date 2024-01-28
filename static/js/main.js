@@ -2,8 +2,10 @@
  * TODO:
  * - decide position cache size (time (10s)? number of positions?)
  * - remember what i was gonna put here
+ * - differentiate users (UUIDs?)
  */
 
+const GEOLOCATION_RETRIES = 5;
 const socket = io();
 
 /**
@@ -34,45 +36,59 @@ const socket = io();
     );
 };
 
-const instantLocation = onSuccess => {
-    if ('geolocation' in navigator === false) {
-        // Handle lack of geolocation support
-        console.error('Geolocation is not supported by your browser.');
-        return;
+// TODO: rename to getPosition()?
+const instantLocation = async (retries, delay) => new Promise((resolve, reject) => {
+    console.log(`Getting location. Retries left: ${retries}`);
+    if(retries <= 0) {
+        reject(`Unable to retrieve location.`);
     }
-
-    // Continuously watch the user's position and call the onSuccess callback with coordinates
     navigator.geolocation.getCurrentPosition(
-        ({ coords: { latitude: lat, longitude: lng } }) => {
-            onSuccess(lat, lng);
+        position => {
+            console.log(`Location retrieved.`);
+            resolve(position);
         },
-        error => {
-            // Handle location tracking errors
-            console.error('Error getting location f/ instant:', error.message || getPositionErrorMessage(error.code));
+        async error => {
+            console.error(`Error getting location: ${error.message}`);
+            await new Promise(r => setTimeout(r, delay));
+            instantLocation(retries - 1, delay);
         },
         {
             enableHighAccuracy: true,
-            timeout: Infinity,
+            timeout: 10 * 1000,
             maximumAge: 0
         }
     );
+});
+
+document.getElementById('tag').addEventListener('click', async () => {
+    console.log('Tag button clicked.');
+    
+    const currentTime = new Date().now();
+    
+    const geoposition = await instantLocation(GEOLOCATION_RETRIES, 100);
+    // TODO: get iphone heading information
+    const locationData = {
+        latitude: geoposition.coords.latitude.toFixed(5),
+        longitude: geoposition.coords.longitude.toFixed(5),
+        timestamp: currentTime
+    };
+    
+    console.log(`Emitting location data...`);
+    socket.emit('tag', locationData);
+});
+
+const main = () => {
+    if (!('geolocation' in navigator)) {
+        console.error('Geolocation is not supported by your browser.');
+        return;
+    }
+    
+    // navigator.geolocation.getCurrentPosition(
+    //     position => {
+    //         console.log('GOD DAMNIT YOU PIECE OF SHIT');
+    //     },
+    //     error => {},
+    // );
 };
 
-// Example usage:
-continuousLocation((lat, lng) => {
-    // Do something with the latitude and longitude values
-    console.log(`Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`);
-});
-
-document.getElementById('tag').addEventListener('click', function() {
-    instantLocation((lat, lng) => {
-        console.log('Tag button clicked, time: ' + new Date().toISOString());
-        const locationData = {
-            latitude: lat.toFixed(5),
-            longitude: lng.toFixed(5),
-            timestamp: new Date().toISOString()
-        };
-        const jsonLocationData = JSON.stringify(locationData);
-        console.log(`Tag button -- ${jsonLocationData}`);
-    });
-});
+main();

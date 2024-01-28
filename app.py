@@ -8,5 +8,9 @@ socket = SocketIO(app)
 def home():
     return render_template('index.html')
 
+@socket.on('tag')
+def handleTag(location_data):
+    print(location_data)
+
 if __name__ == '__main__':
     socket.run(app)
